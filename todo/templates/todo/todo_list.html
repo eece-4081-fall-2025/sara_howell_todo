@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .todo-item {
+            border: 1px solid #ddd;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .completed {
+            background-color: #f0f8ff;
+            text-decoration: line-through;
+        }
+        .incomplete {
+            background-color: #fff8f0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Todo List</h1>
+    
+    {% for todo in todos %}
+        <div class="todo-item {% if todo.complete %}completed{% else %}incomplete{% endif %}">
+            <h3>{{ todo.name }}</h3>
+            <p><strong>Status:</strong> {% if todo.complete %}Complete{% else %}Incomplete{% endif %}</p>
+            {% if todo.due_date %}
+                <p><strong>Due Date:</strong> {{ todo.due_date }}</p>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No todos yet! Add some through the admin panel.</p>
+    {% endfor %}
+    
+    <br>
+    <a href="/admin/">Go to Admin Panel</a>
+</body>
+</html>
