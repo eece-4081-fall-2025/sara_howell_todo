@@ -3,4 +3,10 @@ from . import views
 
 urlpatterns = [
     path('', views.todo_list, name='todo_list'),
+    path('create/', views.todo_create, name='todo_create'),
+    path('edit/<int:pk>/', views.todo_edit, name='todo_edit'),
+    path('delete/<int:pk>/', views.todo_delete, name='todo_delete'),
+    path('mark-done/<int:pk>/', views.todo_mark_done, name='todo_mark_done'),
+    path('mark-skipped/<int:pk>/', views.todo_mark_skipped, name='todo_mark_skipped'),
+    path('mark-pending/<int:pk>/', views.todo_mark_pending, name='todo_mark_pending'),
 ]
