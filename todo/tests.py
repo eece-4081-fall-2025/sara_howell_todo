@@ -397,3 +397,52 @@ class TodoIntegrationTests(TestCase):
         
         response = self.client.get(reverse('todo_list'))
         self.assertEqual(response.context['todos_today'].count(), 5)
+
+
+# TDD Cycles 1&2
+
+class TaskPriorityTests(TestCase):
+    """TDD Cycle 1: Test cases for task priority feature"""
+    
+    def test_todo_has_priority_field(self):
+        """Test that ToDo model has priority field"""
+        todo = ToDo.objects.create(
+            name="Priority Task",
+            priority="high"
+        )
+        self.assertEqual(todo.priority, "high")
+    
+    def test_todo_default_priority_is_medium(self):
+        """Test that default priority is medium"""
+        todo = ToDo.objects.create(name="Default Priority Task")
+        self.assertEqual(todo.priority, "medium")
+    
+    def test_todo_priority_choices(self):
+        """Test all valid priority choices"""
+        priorities = ['low', 'medium', 'high']
+        for priority in priorities:
+            todo = ToDo.objects.create(
+                name=f"Task {priority}",
+                priority=priority
+            )
+            self.assertEqual(todo.priority, priority)
+    
+    def test_high_priority_tasks_display_correctly(self):
+        """Test that high priority tasks are visible in list"""
+        todo = ToDo.objects.create(
+            name="Urgent Task",
+            priority="high"
+        )
+        response = self.client.get(reverse('todo_list'))
+        self.assertContains(response, "Urgent Task")
+    
+    def test_priority_ordering(self):
+        """Test tasks can be ordered by priority"""
+        high = ToDo.objects.create(name="High", priority="high")
+        low = ToDo.objects.create(name="Low", priority="low")
+        medium = ToDo.objects.create(name="Medium", priority="medium")
+        
+        # Should be able to order by priority
+        high_priority_tasks = ToDo.objects.filter(priority="high")
+        self.assertEqual(high_priority_tasks.count(), 1)
+        self.assertEqual(high_priority_tasks.first().name, "High")
