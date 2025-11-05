@@ -35,3 +35,4 @@ class QuickAddForm(forms.ModelForm):
                 'type': 'date'
             }),
         }
+        

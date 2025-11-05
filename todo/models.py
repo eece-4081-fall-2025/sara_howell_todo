@@ -1,8 +1,6 @@
 from django.db import models
 from django.utils import timezone
 
-# Create your models here.
-
 class ToDo(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
@@ -10,8 +8,15 @@ class ToDo(models.Model):
         ('skipped', 'Skipped'),
     ]
     
+    PRIORITY_CHOICES = [
+        ('low', 'Low'),
+        ('medium', 'Medium'),
+        ('high', 'High'),
+    ]
+    
     name = models.CharField(max_length=255)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='medium')
     due_date = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
