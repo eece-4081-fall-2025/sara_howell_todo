@@ -399,7 +399,7 @@ class TodoIntegrationTests(TestCase):
         self.assertEqual(response.context['todos_today'].count(), 5)
 
 
-# TDD Cycles 1&2
+# TDD CYCLE 1
 
 class TaskPriorityTests(TestCase):
     """TDD Cycle 1: Test cases for task priority feature"""
@@ -446,3 +446,63 @@ class TaskPriorityTests(TestCase):
         high_priority_tasks = ToDo.objects.filter(priority="high")
         self.assertEqual(high_priority_tasks.count(), 1)
         self.assertEqual(high_priority_tasks.first().name, "High")
+
+
+# TDD CYCLE 2
+
+class TaskSearchTests(TestCase):
+    """TDD Cycle 2: Test cases for task search functionality"""
+    
+    def setUp(self):
+        """Create test tasks"""
+        self.client = Client()
+        ToDo.objects.create(name="Buy groceries", status="pending")
+        ToDo.objects.create(name="Buy coffee", status="done")
+        ToDo.objects.create(name="Write report", status="pending")
+        ToDo.objects.create(name="Read book", status="pending")
+    
+    def test_search_view_exists(self):
+        """Test that search endpoint exists"""
+        response = self.client.get(reverse('todo_search'))
+        self.assertEqual(response.status_code, 200)
+    
+    def test_search_returns_matching_tasks(self):
+        """Test search returns tasks matching query"""
+        response = self.client.get(reverse('todo_search'), {'q': 'Buy'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Buy groceries")
+        self.assertContains(response, "Buy coffee")
+        self.assertNotContains(response, "Write report")
+    
+    def test_search_case_insensitive(self):
+        """Test search is case insensitive"""
+        response = self.client.get(reverse('todo_search'), {'q': 'buy'})
+        self.assertContains(response, "Buy groceries")
+        
+        response = self.client.get(reverse('todo_search'), {'q': 'BUY'})
+        self.assertContains(response, "Buy groceries")
+    
+    def test_search_empty_query_returns_all(self):
+        """Test empty search returns all tasks"""
+        response = self.client.get(reverse('todo_search'), {'q': ''})
+        self.assertEqual(response.status_code, 200)
+        tasks = response.context['results']
+        self.assertEqual(tasks.count(), 4)
+    
+    def test_search_no_results(self):
+        """Test search with no matches returns empty"""
+        response = self.client.get(reverse('todo_search'), {'q': 'xyz123'})
+        self.assertEqual(response.status_code, 200)
+        tasks = response.context['results']
+        self.assertEqual(tasks.count(), 0)
+    
+    def test_search_partial_match(self):
+        """Test search finds partial matches"""
+        response = self.client.get(reverse('todo_search'), {'q': 'port'})
+        self.assertContains(response, "Write report")
+    
+    def test_search_result_count_displayed(self):
+        """Test search shows result count"""
+        response = self.client.get(reverse('todo_search'), {'q': 'Buy'})
+        # Should show "2 results found" or similar
+        self.assertIn('results', response.context)
