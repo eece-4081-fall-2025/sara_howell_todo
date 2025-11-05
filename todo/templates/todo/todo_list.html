@@ -2,6 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+        <div class="todo-meta">
+            <span class="status-badge status-{{ todo.status }}">{{ todo.get_status_display }}</span>
+            <span class="priority-badge priority-{{ todo.priority }}">{{ todo.get_priority_display }}</span>
+            {% if todo.due_date %}
+            <span>📅 {{ todo.due_date }}</span>
+            {% endif %}
+        </div>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo List</title>
     <style>
@@ -200,6 +207,18 @@
             font-size: 48px;
             margin-bottom: 10px;
         }
+        .priority-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: 5px;
+        }
+        .priority-high { background: #dc3545; color: white; }
+        .priority-medium { background: #ffc107; color: #212529; }
+        .priority-low { background: #6c757d; color: white; }
     </style>
 </head>
 <body>
