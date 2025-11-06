@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .search-box {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .results-info {
+            padding: 20px 30px;
+            background: #e9ecef;
+            font-weight: 600;
+        }
+        .content { padding: 30px; }
+        .todo-item {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .todo-item.pending { border-left: 4px solid #ffc107; }
+        .todo-item.done {
+            border-left: 4px solid #28a745;
+            background: #f0f9f4;
+        }
+        .todo-item.skipped {
+            border-left: 4px solid #6c757d;
+            background: #f8f9fa;
+        }
+        .todo-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .todo-meta {
+            font-size: 13px;
+            color: #6c757d;
+        }
+        .btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background: #5568d3;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Search Tasks</h1>
+        </div>
+
+        <div class="search-box">
+            <form method="get">
+                <input type="text" name="q" class="search-input" 
+                       placeholder="Search tasks..." 
+                       value="{{ query }}" autofocus>
+            </form>
+        </div>
+
+        {% if query %}
+        <div class="results-info">
+            Found {{ count }} result{{ count|pluralize }} for "{{ query }}"
+        </div>
+        {% endif %}
+
+        <div class="content">
+            {% if results %}
+                {% for todo in results %}
+                <div class="todo-item {{ todo.status }}">
+                    <div class="todo-name">{{ todo.name }}</div>
+                    <div class="todo-meta">
+                        Status: {{ todo.get_status_display }}
+                        {% if todo.priority %} | Priority: {{ todo.get_priority_display }}{% endif %}
+                        {% if todo.due_date %} | Due: {{ todo.due_date }}{% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">🔍</div>
+                    {% if query %}
+                        <h3>No tasks found</h3>
+                        <p>No tasks matching "{{ query }}"</p>
+                    {% else %}
+                        <h3>Search for tasks</h3>
+                        <p>Enter a search term above to find tasks</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <a href="{% url 'todo_list' %}" class="btn">← Back to All Tasks</a>
+        </div>
+    </div>
+</body>
+</html>

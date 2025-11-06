@@ -9,4 +9,5 @@ urlpatterns = [
     path('mark-done/<int:pk>/', views.todo_mark_done, name='todo_mark_done'),
     path('mark-skipped/<int:pk>/', views.todo_mark_skipped, name='todo_mark_skipped'),
     path('mark-pending/<int:pk>/', views.todo_mark_pending, name='todo_mark_pending'),
+    path('search/', views.todo_search, name='todo_search'),
 ]

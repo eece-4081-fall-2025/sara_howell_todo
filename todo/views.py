@@ -98,3 +98,23 @@ def todo_mark_pending(request, pk):
     todo.save()
     messages.info(request, f'Task "{todo.name}" marked as pending.')
     return redirect('todo_list')
+
+# Search Feature
+
+def todo_search(request):
+    """Search for todos by name"""
+    query = request.GET.get('q', '')
+    
+    if query:
+        # Case-insensitive search
+        results = ToDo.objects.filter(name__icontains=query)
+    else:
+        # Empty query returns all tasks
+        results = ToDo.objects.all()
+    
+    context = {
+        'results': results,
+        'query': query,
+        'count': results.count()
+    }
+    return render(request, 'todo/todo_search.html', context)
