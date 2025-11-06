@@ -227,7 +227,13 @@
             <h1>📝 My Todo List</h1>
             <p>Stay organized and get things done!</p>
         </div>
-
+        <div style="padding: 20px 30px; background: #f8f9fa; border-bottom: 1px solid #dee2e6;">
+            <form method="get" action="{% url 'todo_search' %}" style="display: flex; gap: 10px;">
+                <input type="text" name="q" placeholder="🔍 Search tasks..." 
+                       style="flex: 1; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 14px;">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
         {% if messages %}
         <div class="messages">
             {% for message in messages %}
